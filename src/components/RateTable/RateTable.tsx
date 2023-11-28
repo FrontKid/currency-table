@@ -1,9 +1,13 @@
-import { useContext } from 'react';
-import { RateProvider } from '../../store/RateContext';
+import { FC } from 'react';
 import { RateRow } from '../RateRow';
+import { IRateData } from '../../types/IRateData';
 
-export const RateTable = () => {
-  const { rateData } = useContext(RateProvider);
+type TRateTable = {
+  data: IRateData[];
+};
+
+export const RateTable: FC<TRateTable> = props => {
+  const { data } = props;
 
   return (
     <table>
@@ -18,8 +22,8 @@ export const RateTable = () => {
         </tr>
       </thead>
       <tbody>
-        {rateData.map(data => (
-          <RateRow key={data.cc} {...data} />
+        {data.map(dataEntity => (
+          <RateRow key={dataEntity.cc} {...dataEntity} />
         ))}
       </tbody>
     </table>
