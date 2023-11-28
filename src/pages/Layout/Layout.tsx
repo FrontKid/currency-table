@@ -4,10 +4,10 @@ import { Footer } from '../Footer';
 
 export const Layout = () => {
   return (
-    <>
+    <div className="container">
       <Header />
       <Outlet />
       <Footer />
-    </>
+    </div>
   );
 };
