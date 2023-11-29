@@ -1,19 +1,18 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
+import styles from './Navbar.module.scss';
 
-type THeaderProps = object;
-
-export const Header: FC<THeaderProps> = () => {
+export const Header: FC = () => {
   return (
-    <nav>
-      <ul>
-        <li>
+    <nav className={styles.nav}>
+      <ul className={styles.list}>
+        <li className={styles.item}>
           <NavLink to="/">Home</NavLink>
         </li>
-        <li>
+        <li className={styles.item}>
           <NavLink to="rate-change">Changed rates</NavLink>
         </li>
-        <li>
+        <li className={styles.item}>
           <NavLink to="rate-search">Search rate</NavLink>
         </li>
       </ul>

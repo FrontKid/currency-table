@@ -1,0 +1,13 @@
+.nav {
+  margin: auto;
+  max-width: 300px;
+
+  .list {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .item {
+    list-style: none;
+  }
+}
