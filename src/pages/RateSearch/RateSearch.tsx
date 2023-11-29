@@ -1,46 +1,40 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import { fetchRate } from '../../api';
-import { IRateData } from '../../types/IRateData';
 import { RateTable } from '../../components/RateTable';
-import { prepareRateData } from '../../utils/prepareRateData';
-import dayjs from 'dayjs';
+import Pagination from '../../utils/Pagination/Pagination.js';
+
+import dayjs, { Dayjs } from 'dayjs';
+import { RateProvider } from '../../store/RateContext.js';
+import { getSlicedData } from '../../utils/helpers.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const formatDate = (date:any) => {
-  return date ? format(date, 'yyyyMMdd') : '';
+const formatDate = (date: Dayjs | null) => {
+  return date ? dayjs(date).format('YYYYMMDD') : '';
 };
 
-const MIN_SELECT_DATE = dayjs('2000-01-01')
-const CURRENT_DAY_DATA = dayjs()
-const CURRENT_DAY = dayjs().format('YYYYMMDD')
+const PAGE_SIZE = 10;
+const MIN_SELECT_DATE = dayjs('2000-01-01');
+const CURRENT_DAY_DATA = dayjs();
+const CURRENT_DAY = dayjs().format('YYYYMMDD');
 
 export const RateSearch: FC = () => {
-  const [rateData, setRateData] = useState<IRateData[]>([]);
   const [date, setDate] = useState(CURRENT_DAY);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { fetchData, rateData } = useContext(RateProvider);
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDatePicker = (date: any) => {
-    setDate(formatDate(date.$d))
-  } 
+  const handleDatePicker = (date: Dayjs | null) => {
+    setDate(formatDate(date));
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const rateData = await fetchRate(date);
-        const updatedRateData = prepareRateData(rateData);
-
-        setRateData(updatedRateData);
-      } catch (error) {
-        console.log('No data');
-      }
-    })();
-  }, [date]);
+    fetchData(date);
+  }, [fetchData, date]);
 
   return (
     <>
@@ -52,7 +46,14 @@ export const RateSearch: FC = () => {
           onChange={handleDatePicker}
         />
       </LocalizationProvider>
-      <RateTable data={rateData} />
+      <RateTable data={getSlicedData(rateData, {currentPage, PAGE_SIZE})} />
+      <Pagination
+        className="pagination-bar"
+        currentPage={currentPage}
+        totalCount={rateData.length}
+        pageSize={PAGE_SIZE}
+        onPageChange={setCurrentPage}
+      />
     </>
   );
 };

@@ -1,26 +1,30 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { RateTable } from '../../components/RateTable';
-import { fetchRate } from '../../api';
-import { IRateData } from '../../types/IRateData';
-import { prepareRateData } from '../../utils/prepareRateData';
+import Pagination from '../../utils/Pagination/Pagination.js';
+import { RateProvider } from '../../store/RateContext.js';
+import { getSlicedData } from '../../utils/helpers.js';
 
 type THomeProps = object;
+const PAGE_SIZE = 10;
 
 export const Home: FC<THomeProps> = () => {
-  const [rateData, setRateData] = useState<IRateData[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { fetchData, rateData } = useContext(RateProvider);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const rateData = await fetchRate();
-        const updatedRateData = prepareRateData(rateData);
+    fetchData();
+  }, [fetchData]);
 
-        setRateData(updatedRateData);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
-
-  return <RateTable data={rateData} />;
+  return (
+    <>
+      <RateTable data={getSlicedData(rateData, { currentPage, PAGE_SIZE })} />
+      <Pagination
+        className="pagination-bar"
+        currentPage={currentPage}
+        totalCount={rateData.length}
+        pageSize={PAGE_SIZE}
+        onPageChange={page => setCurrentPage(page)}
+      />
+    </>
+  );
 };

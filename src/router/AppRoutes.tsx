@@ -8,8 +8,6 @@ import { RateEditing } from '../pages/RateEditing';
 import { RateSearch } from '../pages/RateSearch';
 import { RateChange } from '../pages/RateChange';
 
-import '../styles/main.scss';
-
 export const AppRoutes: FC = () => {
   return (
     <Router>
