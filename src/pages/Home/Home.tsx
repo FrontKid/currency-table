@@ -15,8 +15,6 @@ export const Home: FC<THomeProps> = () => {
         const rateData = await fetchRate();
         const updatedRateData = prepareRateData(rateData);
 
-        console.log(updatedRateData)
-
         setRateData(updatedRateData);
       } catch (error) {
         console.error(error);
