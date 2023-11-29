@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { fetchRate } from '../../api';
 import { IRateData } from '../../types/IRateData';
 import { RateTable } from '../../components/RateTable';
+import { prepareRateData } from '../../utils/prepareRateData';
 
 type TRateSearchProps = object;
 
@@ -12,10 +13,7 @@ export const RateSearch: FC<TRateSearchProps> = () => {
     (async () => {
       try {
         const rateData = await fetchRate('20191107');
-        const updatedRateData = rateData.map((data: IRateData) => ({
-          ...data,
-          coef: 1,
-        }));
+        const updatedRateData = prepareRateData(rateData);
 
         setRateData(updatedRateData);
       } catch (error) {
